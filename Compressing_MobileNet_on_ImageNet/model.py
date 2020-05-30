@@ -31,9 +31,6 @@ def load_and_compile(model_path):
                   metrics=["categorical_accuracy", "top_k_categorical_accuracy"])
     return model
 
-def count_weight(model):
-    return int(np.sum([K.count_parames(p) for p in set(model.trainable_weights)]))
-
 
 
 

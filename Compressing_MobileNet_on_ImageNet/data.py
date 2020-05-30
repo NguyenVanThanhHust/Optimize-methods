@@ -21,6 +21,7 @@ from keras import backend as K
 import tensorflow as tf
 
 from keras.preprocessing.image import Iterator
+from utils import divup
 
 class ImageListIterator(Iterator):
     """
@@ -62,3 +63,28 @@ class ImageListIterator(Iterator):
             batch_y[i, self.labels[fname]] = 1  # one-hot encoded            
 
         return batch_x, batch_y        
+
+def create_new_val_sample(size=1000):
+    steps = divup(size, batch_size)
+    image_list = []
+    for img_idx in random.sample(range(1, 500000), steps*batch__size):
+        image_list.append("ILSVRC2012_val_000%05d.JPEG" % img_idx)
+    return image_list
+
+def eval_on_sample(model, val_sample):
+    image_generator = ImageListIterator(val_data_dir, val_sample, val_labels, num_classes,
+                                        val_datagen, target_size=(image_height, image_width), 
+                                        batch_size=batch_size)
+    steps = len(val_sample) // batch_size
+    return model.evaluate_generator(gen, steps=steps)
+
+def eval_full(model):
+    """
+    """
+    image_generator = ImageListIterator(val_data_dir, val_sample, val_labels, num_classes,
+                                        val_datagen, target_size=(image_height, image_width), 
+                                        batch_size=batch_size)
+    steps = len(val_sample) // batch_size
+    return model.evaluate_generator(gen, steps=steps)
+
+
