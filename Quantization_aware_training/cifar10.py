@@ -24,7 +24,7 @@ def set_random_seeds(random_seed=0):
     random.seed(random_seed)
 
 
-def prepare_dataloader(num_workers=8,
+def prepare_dataloader(num_workers=4,
                        train_batch_size=128,
                        eval_batch_size=256):
 
@@ -321,7 +321,7 @@ def main():
     # Create an untrained model.
     model = create_model(num_classes=num_classes)
 
-    train_loader, test_loader = prepare_dataloader(num_workers=8,
+    train_loader, test_loader = prepare_dataloader(num_workers=4,
                                                    train_batch_size=128,
                                                    eval_batch_size=256)
 
@@ -332,7 +332,7 @@ def main():
                         test_loader=test_loader,
                         device=cuda_device,
                         learning_rate=1e-1,
-                        num_epochs=200)
+                        num_epochs=2)
     # Save model.
     save_model(model=model, model_dir=model_dir, model_filename=model_filename)
     # Load a pretrained model.

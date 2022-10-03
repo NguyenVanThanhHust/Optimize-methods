@@ -1,0 +1,37 @@
+FROM nvcr.io/nvidia/deepstream:5.1-21.02-devel
+
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+
+RUN cat /etc/lsb-release
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -y git python-dev python3 python3-pip python3.6-dev python3.8-dev cmake g++ build-essential \
+    libglib2.0-dev libglib2.0-dev-bin python-gi-dev libtool m4 autoconf automake libgirepository1.0-dev libcairo2-dev
+
+RUN apt-get install -y apt-transport-https ca-certificates -y
+RUN update-ca-certificates
+
+WORKDIR /git_installed_libs/
+RUN git clone https://github.com/GStreamer/gst-python.git
+WORKDIR /git_installed_libs/gst-python
+RUN git checkout 1a8f48a6c2911b308231a3843f771a50775cbd2e
+RUN ./autogen.sh PYTHON=python3
+RUN ./configure PYTHON=python3
+RUN make && make install
+
+# RUN apt update && apt-get install -y wget autoconf automake libtool curl make g++ unzip
+# WORKDIR /git_installed_libs/ 
+# RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protobuf-all-3.19.4.tar.gz && tar -xvf protobuf-all-3.19.4.tar.gz
+# WORKDIR /git_installed_libs/protobuf-3.19.4
+# RUN ./configure && make && make check && make install && ldconfig
+
+# RUN pip3 install --upgrade pip
+# RUN apt-get -y install libprotobuf-dev protobuf-compiler
+# RUN pip3 install scikit-learn opencv-python 
+# RUN pip3 install protobuf onnx onnx-simplifier onnxruntime-gpu loguru
+
+WORKDIR /workspace/
