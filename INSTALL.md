@@ -1,1 +1,1 @@
-docker build -t deepstream:dgpu --build-arg TENSORRT_VERSION="8.4.1-1+cuda11.7" --build-arg CUDNN_VERSION="8.4.1.50-1+cuda11.7" --build-arg CUDA_VERSION="11.7.1" -f deepstream_6.1.
+sudo docker build -t deepstream61_image -f deepstream_61 .
