@@ -1,5 +1,6 @@
 # Deepstream build
 ./Deepstreams_cpp/*/build/*
+./Prebuilt/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
