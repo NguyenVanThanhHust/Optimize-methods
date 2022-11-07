@@ -1,6 +1,7 @@
 # Deepstream build
-./Deepstreams_cpp/*/build/*
-./Prebuilt/*
+Deepstreams_cpp/*/build/*
+Prebuilt/*
+my_gstvenv/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
