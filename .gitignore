@@ -2,6 +2,7 @@
 Deepstreams_cpp/*/build/*
 Prebuilt/*
 my_gstvenv/*
+gstreamer-python/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
