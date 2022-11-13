@@ -39,13 +39,24 @@ simplelogger::Logger *logger = simplelogger::LoggerFactory::CreateConsoleLogger(
 
 int main()
 {
-    std::string inputFile = "basic_4k_traffic.mp4";
-    const char * inputFileCstring = inputFile.c_str();
-    int width = 3840, height = 2160;
-    FFmpegDemuxer demuxer(inputFileCstring);
-    int videoCodec = demuxer.GetVideoCodec();
-    cout<<videoCodec<<endl;
-    cout<<"must correct";
+    try
+    {
+        /* code */
+        std::string inputFile = "basic_4k_traffic.h264";
+        const char * inputFileCstring = inputFile.c_str();
+        cout<<"Video name: ";
+        cout<<inputFileCstring<<endl;
+        int width = 3840, height = 2160;
+        FFmpegDemuxer demuxer(inputFileCstring);
+        int videoCodec = demuxer.GetVideoCodec();
+        cout<<videoCodec<<endl;
+    }
+    catch(const std::exception& e)
+    {
+        cout<<"Exception: ";
+        std::cerr << e.what() << '\n';
+    }
+    
 
     return 0;
 }

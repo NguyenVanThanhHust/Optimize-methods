@@ -1,19 +1,17 @@
 # Replace with required container type e.g. base, devel etc in the following line
 FROM nvcr.io/nvidia/deepstream:6.0.1-devel
 
-ARG DEBIAN_FRONTEND=noninteractive
-
-# To get video driver libraries at runtime (libnvidia-encode.so/libnvcuvid.so)
 ENV NVIDIA_DRIVER_CAPABILITIES $NVIDIA_DRIVER_CAPABILITIES,video
 
-WORKDIR /opt/
-
-RUN git clone https://github.com/FFmpeg/FFmpeg.git -b release/4.4 ffmpeg/
-RUN git config --global http.sslverify false
-RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git 
-
 RUN rm /etc/apt/sources.list.d/cuda.list
-# RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+
+RUN cat /etc/lsb-release
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /opt/
 
 RUN apt-get update -qq  && apt-get install -y autoconf \
     automake \
@@ -39,49 +37,23 @@ RUN apt-get update -qq  && apt-get install -y autoconf \
     yasm \
     zlib1g-dev
 
-# RUN apt-get install -y libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev libavdevice-dev
+RUN apt install -y git python-dev python3 python3-pip python3.6-dev python3.8-dev cmake g++ build-essential \
+    libglib2.0-dev libglib2.0-dev-bin python-gi-dev libtool m4 autoconf automake libgirepository1.0-dev libcairo2-dev
+
 RUN apt-get install -y libavdevice-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavresample-dev libavdevice-dev
 
-WORKDIR /opt/nv-codec-headers/
-RUN make install
-
 RUN apt-get install -y build-essential yasm cmake libtool libc6 libc6-dev unzip wget libnuma1 libnuma-dev
-WORKDIR /opt/ffmpeg/
-RUN ./configure --prefix=/usr/local/ffmpeg --enable-nonfree --enable-cuda-nvcc --enable-libnpp --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --disable-static --enable-shared --nvccflags="-gencode arch=compute_75,code=sm_75 -O2"
-# RUN ./configure --prefix=/usr/local/ffmpeg --enable-gpl --enable-version3 --enable-nonfree --enable-postproc --enable-pthreads --enable-libfaac --enable-libmp3lame --enable-libtheora --enable-libx264 --enable-libxvid --enable-x11grab --enable-libvorbis && make && make install
-RUN make -j2 && make install
-# configure the PATH param
-RUN echo "# Add FFMpeg bin & library paths:" >> ~/.bashrc
-RUN echo "export PATH=/usr/local/ffmpeg/bin:$PATH" >> ~/.bashrc
-RUN echo "export LD_LIBRARY_PATH=/usr/local/ffmpeg/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
-SHELL ["/bin/bash", "-c", "source ~/.bashrc"]
-RUN source ~/.bashrc
+
+WORKDIR /opt/nvidia/deepstream/deepstream/sources/
+RUN git clone https://github.com/NVIDIA-AI-IOT/deepstream_python_apps
+WORKDIR /opt/nvidia/deepstream/deepstream/sources/deepstream_python_apps/
+RUN git submodule update --init
+RUN apt-get install -y apt-transport-https ca-certificates -y && update-ca-certificates
+WORKDIR /opt/nvidia/deepstream/deepstream/sources/deepstream_python_apps/3rdparty/gst-python/
+RUN ./autogen.sh && make && make install 
+WORKDIR /opt/nvidia/deepstream/deepstream/sources/deepstream_python_apps/bindings/build/
+RUN cmake .. -DPYTHON_MAJOR_VERSION=3 -DPYTHON_MINOR_VERSION=6 -DDS_VERSION=6.0 .. && make
+
+
 WORKDIR /workspace/
 
-ARG LIB_PREFIX='/usr/local'
-ENV CXXFLAGS="-D__STDC_CONSTANT_MACROS"
-ENV LIB_PREFIX=${LIB_PREFIX} \
-    FFMPEG_PATH='/usr/bin/ffmpeg'
-
-RUN echo $(ffmpeg -version)
-
-ARG USERNAME=thanhnv
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
-# Create the user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    #
-    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-    && apt-get update \
-    && apt-get -y install sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
-# ********************************************************
-# * Anything else you want to do like clean up goes here *
-# ********************************************************
-
-# [Optional] Set the default user. Omit if you want to keep the default as root.
-USER $USERNAME
