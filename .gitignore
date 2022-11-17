@@ -4,6 +4,10 @@ Prebuilt/*
 my_gstvenv/*
 gstreamer-python/*
 data/*
+opencv_libs/*
+
+*.deb
+*.tbz2
 *.mp4
 *.avi
 
