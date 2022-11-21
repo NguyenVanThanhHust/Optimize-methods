@@ -6,6 +6,7 @@ gstreamer-python/*
 data/*
 opencv_libs/*
 
+*.onnx
 *.deb
 *.tbz2
 *.mp4
