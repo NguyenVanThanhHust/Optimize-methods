@@ -5,6 +5,7 @@ my_gstvenv/*
 gstreamer-python/*
 data/*
 opencv_libs/*
+*/.vscode/
 
 *.trt
 *.onnx
