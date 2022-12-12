@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y libssl1.1 \
     libgstreamer1.0-0 gstreamer1.0-tools \
     gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly gstreamer1.0-libav \
-    libgstrtspserver-1.0-0 libjansson4 ffmpeg \
+    libgstrtspserver-1.0-0 libjansson4 \
     libjson-glib-1.0 libgles2-mesa libgstreamer1.0-dev \
     libgstreamer-plugins-base1.0-dev libjson-glib-dev \
     libgstrtspserver-1.0-dev
@@ -47,14 +47,20 @@ RUN ln -sf libnvcuvid.so.1 libnvcuvid.so
 # RUN apt-get install -y libavcodec-dev libavformat-dev libavutil-dev libswscale-dev
 
 WORKDIR /opt/
+RUN git clone https://code.videolan.org/videolan/x264.git
+WORKDIR /opt/x264
+RUN ./configure --prefix=/usr/local --enable-pic --enable-shared && make && make install
+WORKDIR /opt/
+
 RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git && \ 
     cd nv-codec-headers && make install && cd .. && \ 
     git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg/ && \ 
     apt-get update && apt-get install -y build-essential yasm libtool libc6 libc6-dev unzip wget libnuma1 libnuma-dev && \ 
     cd ffmpeg && \
-    ./configure --enable-nonfree --enable-libnpp --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --disable-static --enable-shared --disable-x86asm && \ 
+    ./configure --enable-nonfree --enable-libnpp --enable-libx264 --enable-gpl --enable-shared --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --disable-static --disable-x86asm && \ 
     make -j$(nproc) && \
-    make install 
+    make install && \
+    ldconfig
 
 # To install Kafka
 RUN git clone https://github.com/edenhill/librdkafka.git /librdkafka && \
@@ -199,25 +205,4 @@ RUN git clone https://github.com/Megvii-BaseDetection/YOLOX.git
 WORKDIR /opt/YOLOX/
 RUN python setup.py develop
 
-
 WORKDIR /workspace/
-# ARG USERNAME=thanhnv
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
-
-# # Create the user
-# RUN groupadd --gid $USER_GID $USERNAME \
-#     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-#     #
-#     # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-#     && apt-get update \
-#     && apt-get install -y sudo \
-#     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-#     && chmod 0440 /etc/sudoers.d/$USERNAME
-
-# # ********************************************************
-# # * Anything else you want to do like clean up goes here *
-# # ********************************************************
-
-# # [Optional] Set the default user. Omit if you want to keep the default as root.
-# USER $USERNAME
