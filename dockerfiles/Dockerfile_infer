@@ -59,14 +59,6 @@ RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git && \
     make install && \
     ldconfig
 
-
-# To install Kafka
-RUN git clone https://github.com/edenhill/librdkafka.git /librdkafka && \
-    cd /librdkafka && ./configure && make -j && make -j install && \
-    mkdir -p /opt/nvidia/deepstream/deepstream-6.0/lib && \
-    cp /usr/local/lib/librdkafka* /opt/nvidia/deepstream/deepstream-6.0/lib && \
-    rm -rf /librdkafka
-
 RUN \
    echo 'alias python="/usr/bin/python3"' >> ~/.bashrc && \
    echo 'alias pip="/usr/bin/python3 -m pip"' >> ~/.bashrc && \
