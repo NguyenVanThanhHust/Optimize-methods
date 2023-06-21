@@ -1,0 +1,3 @@
+[submodule "How_to_train_YoloX/YOLOX"]
+	path = How_to_train_YoloX/YOLOX
+	url = git@github.com:NguyenVanThanhHust/YOLOX.git
