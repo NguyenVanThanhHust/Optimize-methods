@@ -51,7 +51,6 @@ def make_dataloaders(train_dataset=None, val_dataset=None, batch_size=None, num_
     paths = {
         'train': train_dataset,
         'test': val_dataset
-
     }
 
     start_time = time.time()
@@ -104,7 +103,7 @@ def train(model, loaders, lr=None, epochs=None, label_smoothing=None,
     loss_fn = CrossEntropyLoss(label_smoothing=label_smoothing)
 
     for epoch in range(epochs):
-        start = time.time()
+        start_epoch = time.time()
         for ims, labs in loaders['train']:
             opt.zero_grad(set_to_none=True)
             with autocast():

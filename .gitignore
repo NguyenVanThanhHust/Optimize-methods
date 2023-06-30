@@ -4,6 +4,7 @@ Prebuilt/*
 my_gstvenv/*
 gstreamer-python/*
 data/*
+ffcv_sample/data/*
 opencv_libs/*
 */.vscode/
 
