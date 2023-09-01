@@ -14,7 +14,6 @@ import numpy as np
 from resnet import resnet18
 
 
-
 def set_random_seeds(random_seed=0):
 
     torch.manual_seed(random_seed)

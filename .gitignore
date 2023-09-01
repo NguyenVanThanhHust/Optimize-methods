@@ -1,3 +1,10 @@
+# Model checkpoint
+*.onnx
+*.pt 
+*.pth 
+*.bin
+*.xml 
+
 # Deepstream build
 Deepstreams_cpp/*/build/*
 Prebuilt/*

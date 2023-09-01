@@ -1,0 +1,6 @@
+psutil
+onnx
+onnxruntime
+openvino
+openvino-dev
+ipywidgetsw

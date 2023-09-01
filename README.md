@@ -8,4 +8,3 @@ Pruning | [Pytorch tutorial](https://pytorch.org/tutorials/intermediate/pruning_
 Static quantization | [Static quantization](https://nenadmarkus.com/p/fusing-batchnorm-and-conv/) | Quantization, Infer |[Original Implementation](https://github.com/leimao/PyTorch-Quantization-Aware-Training), [My implementation](Quantization_aware_training) |
 
 ## Some result
-B
