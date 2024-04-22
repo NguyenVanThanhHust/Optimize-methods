@@ -1,3 +1,5 @@
+How_to_train_Resnet/data/*
+*.tar.gz
 # Model checkpoint
 *.onnx
 *.pt 
